@@ -1,0 +1,137 @@
+# Copyright (C) 2024 Soro
+# This file is distributed under the same license as the Soro SEO plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Soro SEO 1.2.0\n"
+"Report-Msgid-Bugs-To: https://trysoro.com/support\n"
+"POT-Creation-Date: 2024-01-01 00:00:00+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: soro-seo.php
+msgid "Soro Connector"
+msgstr ""
+
+#: soro-seo.php
+msgid "Soro"
+msgstr ""
+
+#: soro-seo.php
+msgid "Security check failed."
+msgstr ""
+
+#: soro-seo.php
+msgid "You do not have permission to do this."
+msgstr ""
+
+#: soro-seo.php
+msgid "API key regenerated successfully."
+msgstr ""
+
+#: soro-seo.php
+msgid "Copied!"
+msgstr ""
+
+#: soro-seo.php
+msgid "Please copy manually: "
+msgstr ""
+
+#: soro-seo.php
+msgid "Soro Mascot"
+msgstr ""
+
+#: soro-seo.php
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: soro-seo.php
+msgid "AI-powered content automation for your WordPress site"
+msgstr ""
+
+#: soro-seo.php
+msgid "Connection Status"
+msgstr ""
+
+#: soro-seo.php
+msgid "Ready to connect"
+msgstr ""
+
+#: soro-seo.php
+msgid "Your WordPress site is ready to receive articles from Soro."
+msgstr ""
+
+#: soro-seo.php
+msgid "Your API Key"
+msgstr ""
+
+#: soro-seo.php
+msgid "Copy this key and paste it in your Soro dashboard to connect this site."
+msgstr ""
+
+#: soro-seo.php
+msgid "Copy API Key"
+msgstr ""
+
+#: soro-seo.php
+msgid "How to Connect"
+msgstr ""
+
+#: soro-seo.php
+msgid "Copy your API key above"
+msgstr ""
+
+#: soro-seo.php
+msgid "Go to %s in your Soro dashboard"
+msgstr ""
+
+#: soro-seo.php
+msgid "Settings → Integrations"
+msgstr ""
+
+#: soro-seo.php
+msgid "Click on %s"
+msgstr ""
+
+#: soro-seo.php
+msgid "WordPress"
+msgstr ""
+
+#: soro-seo.php
+msgid "Enter your site URL and paste the API key"
+msgstr ""
+
+#: soro-seo.php
+msgid "Click %s and you're done!"
+msgstr ""
+
+#: soro-seo.php
+msgid "Connect"
+msgstr ""
+
+#: soro-seo.php
+msgid "Regenerate API Key"
+msgstr ""
+
+#: soro-seo.php
+msgid "Generate a new API key if you suspect your current key has been compromised. Your old key will stop working immediately."
+msgstr ""
+
+#: soro-seo.php
+msgid "Are you sure? Your current API key will stop working and you will need to update it in your Soro dashboard."
+msgstr ""
+
+#: soro-seo.php
+msgid "Powered by %1$s • %2$s"
+msgstr ""
+
+#: soro-seo.php
+msgid "Documentation"
+msgstr ""
+
+#: soro-seo.php
+msgid "Title and content are required"
+msgstr ""
