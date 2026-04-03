@@ -4,7 +4,7 @@ Tags: seo, content, automation, ai, publishing
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,10 @@ Yes! In your Soro dashboard, you can set articles to be published as "Draft" ins
 
 == Changelog ==
 
+= 1.4.1 =
+* Improved compatibility with alternative hosting platforms
+* Fixed publishing issues with non-English and long-form articles
+
 = 1.4.0 =
 * Improved: Enhanced publishing reliability on slower hosting environments
 * New: Added smart duplicate prevention to handle interrupted connections gracefully
@@ -142,8 +146,11 @@ Yes! In your Soro dashboard, you can set articles to be published as "Draft" ins
 
 == Upgrade Notice ==
 
+= 1.4.1 =
+Improved hosting compatibility and fixes for non-English content publishing.
+
 = 1.4.0 =
-Important reliability update for the automated publishing system. Recommended for all users.
+Important reliability update for the automated publishing system.
 
 = 1.3.6 =
 Fixes "invalid API key" errors on sites that restrict the REST API. Recommended for all users.
