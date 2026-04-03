@@ -3,7 +3,7 @@
  * Plugin Name: Soro - SEO Autopilot & AI Content Writer
  * Plugin URI: https://trysoro.com/wordpress
  * Description: Connect your WordPress site to Soro for automatic AI-powered article publishing.
- * Version: 1.3.6
+ * Version: 1.4.0
  * Author: Soro
  * Author URI: https://trysoro.com
  * License: GPL v2 or later
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SORO_CONNECTOR_VERSION', '1.3.6');
+define('SORO_CONNECTOR_VERSION', '1.4.0');
 define('SORO_CONNECTOR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SORO_CONNECTOR_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -37,6 +37,7 @@ class SoroConnector {
         add_action('rest_api_init', array($this, 'register_rest_routes'));
         
         add_filter('rest_authentication_errors', array($this, 'bypass_rest_restriction_for_soro'), 999);
+        add_action('in_admin_header', array($this, 'hide_admin_notices_on_soro_page'));
         
         register_activation_hook(__FILE__, array($this, 'activate'));
     }
@@ -63,6 +64,17 @@ class SoroConnector {
         }
         
         return $result;
+    }
+    
+    /**
+     * Hide all admin notices (update nags, plugin promos, etc.) on the Soro settings page
+     */
+    public function hide_admin_notices_on_soro_page() {
+        $screen = get_current_screen();
+        if ($screen && $screen->id === 'settings_page_soro-seo') {
+            remove_all_actions('admin_notices');
+            remove_all_actions('all_admin_notices');
+        }
     }
     
     /**
@@ -662,17 +674,58 @@ class SoroConnector {
             ), 400);
         }
         
+        // Idempotency: if this exact Soro article was already published, return the existing post
+        if (!empty($params['soro_article_id'])) {
+            $existing = get_posts(array(
+                'post_type'   => 'post',
+                'post_status' => array('publish', 'draft', 'pending', 'private'),
+                'meta_key'    => '_soro_article_id',
+                'meta_value'  => sanitize_text_field($params['soro_article_id']),
+                'numberposts' => 1,
+                'fields'      => 'ids',
+            ));
+            
+            if (!empty($existing)) {
+                $existing_id = $existing[0];
+                return new WP_REST_Response(array(
+                    'success' => true,
+                    'post_id' => $existing_id,
+                    'post_url' => get_permalink($existing_id),
+                    'edit_url' => get_edit_post_link($existing_id, 'raw'),
+                    'duplicate' => true,
+                ), 200);
+            }
+        }
+        
+        // Prevent duplicate slugs: if any post or page with this slug already exists,
+        // still create the article as draft (so Soro stops retrying) but don't publish
+        // to avoid SEO cannibalization.
+        $slug_conflict = false;
+        if (!empty($params['slug'])) {
+            $existing_by_slug = get_posts(array(
+                'post_type'   => array('post', 'page'),
+                'post_status' => array('publish', 'draft', 'pending', 'private'),
+                'name'        => sanitize_title($params['slug']),
+                'numberposts' => 1,
+                'fields'      => 'ids',
+            ));
+            if (!empty($existing_by_slug)) {
+                $slug_conflict = true;
+            }
+        }
+        
         $allowed_statuses = array('draft', 'publish', 'pending', 'private');
         $status = isset($params['status']) ? sanitize_text_field($params['status']) : 'draft';
         if (!in_array($status, $allowed_statuses, true)) {
             $status = 'draft';
         }
         
+        if ($slug_conflict) {
+            $status = 'draft';
+        }
+        
         // Build meta_input so SEO meta is set DURING wp_insert_post, before
         // Yoast/RankMath/AIOSEO fire their save_post hooks to build indexables.
-        // Previously we used update_post_meta after wp_insert_post, which meant
-        // Yoast would build its indexable without the focus keyword, causing
-        // the SEO score to not appear until the user re-entered the keyphrase.
         $meta_input = array(
             '_soro_published_at' => current_time('mysql'),
         );
@@ -740,24 +793,33 @@ class SoroConnector {
             ), 500);
         }
         
-        // Trigger Yoast indexable rebuild as a safety net.
-        // Even though meta_input sets the data before save_post fires,
-        // some Yoast versions may need an explicit rebuild to pick up
-        // the focus keyword in their indexables table.
         $this->rebuild_yoast_indexable($post_id);
         
+        // Featured image is non-critical — if it crashes, we still return the post_id
+        // so Soro records the publish and never retries (which would create duplicates).
         $featured_image_id = null;
         if (!empty($params['featured_image_url'])) {
-            $featured_image_id = $this->attach_featured_image($post_id, $params['featured_image_url'], $params['title']);
+            try {
+                $featured_image_id = $this->attach_featured_image($post_id, $params['featured_image_url'], $params['title']);
+            } catch (\Throwable $e) {
+                // Log but don't fail — the post is already created
+            }
         }
         
-        return new WP_REST_Response(array(
+        $response_data = array(
             'success' => true,
             'post_id' => $post_id,
             'post_url' => get_permalink($post_id),
             'edit_url' => get_edit_post_link($post_id, 'raw'),
             'featured_image_id' => $featured_image_id,
-        ), 201);
+        );
+        
+        if ($slug_conflict) {
+            $response_data['slug_conflict'] = true;
+            $response_data['saved_as_draft'] = true;
+        }
+        
+        return new WP_REST_Response($response_data, 201);
     }
     
     /**
