@@ -3,7 +3,7 @@
  * Plugin Name: Soro - SEO Autopilot & AI Content Writer
  * Plugin URI: https://trysoro.com/wordpress
  * Description: Connect your WordPress site to Soro for automatic AI-powered article publishing.
- * Version: 1.4.1
+ * Version: 1.4.2
  * Author: Soro
  * Author URI: https://trysoro.com
  * License: GPL v2 or later
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SORO_CONNECTOR_VERSION', '1.4.1');
+define('SORO_CONNECTOR_VERSION', '1.4.2');
 define('SORO_CONNECTOR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SORO_CONNECTOR_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -56,14 +56,21 @@ class SoroConnector {
         }
         
         $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-        $rest_route  = isset($_GET['rest_route']) ? $_GET['rest_route'] : '';
+        $path = strtok($request_uri, '?');
         
-        if (strpos($request_uri, '/wp-json/soro/v1/') !== false ||
-            strpos($rest_route, '/soro/v1/') !== false) {
-            return true;
+        $rest_route = isset($_GET['rest_route']) ? $_GET['rest_route'] : '';
+        
+        $is_soro = false;
+        
+        if ($path && strpos($path, '/' . rest_get_url_prefix() . '/soro/v1/') !== false) {
+            $is_soro = true;
         }
         
-        return $result;
+        if (!$is_soro && $rest_route && strpos($rest_route, '/soro/v1/') === 0) {
+            $is_soro = true;
+        }
+        
+        return $is_soro ? true : $result;
     }
     
     /**

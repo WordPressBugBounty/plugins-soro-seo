@@ -4,7 +4,7 @@ Tags: seo, content, automation, ai, publishing
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,9 @@ Yes! In your Soro dashboard, you can set articles to be published as "Draft" ins
 
 == Changelog ==
 
+= 1.4.2 =
+* Improved compatibility with various WordPress configurations
+
 = 1.4.1 =
 * Improved compatibility with alternative hosting platforms
 * Fixed publishing issues with non-English and long-form articles
@@ -145,6 +148,9 @@ Yes! In your Soro dashboard, you can set articles to be published as "Draft" ins
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.4.2 =
+Improved compatibility with various WordPress configurations. Recommended for all users.
 
 = 1.4.1 =
 Improved hosting compatibility and fixes for non-English content publishing.
