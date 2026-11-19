@@ -3,7 +3,7 @@
  * Plugin Name: Soro - SEO Autopilot & AI Content Writer
  * Plugin URI: https://trysoro.com/wordpress
  * Description: Connect your WordPress site to Soro for automatic AI-powered article publishing.
- * Version: 1.4.2
+ * Version: 1.4.3
  * Author: Soro
  * Author URI: https://trysoro.com
  * License: GPL v2 or later
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SORO_CONNECTOR_VERSION', '1.4.2');
+define('SORO_CONNECTOR_VERSION', '1.4.3');
 define('SORO_CONNECTOR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SORO_CONNECTOR_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -803,6 +803,14 @@ class SoroConnector {
                 'success' => false,
                 'error' => $post_id->get_error_message(),
             ), 500);
+        }
+        
+        // Polylang: posts without a language are hidden from the admin list and 404
+        if (function_exists('pll_set_post_language') && function_exists('pll_get_post_language') && function_exists('pll_default_language')) {
+            $lang = pll_default_language();
+            if ($lang && !pll_get_post_language($post_id)) {
+                pll_set_post_language($post_id, $lang);
+            }
         }
         
         $this->rebuild_yoast_indexable($post_id);

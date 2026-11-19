@@ -2,9 +2,9 @@
 Contributors: soroseo
 Tags: seo, content, automation, ai, publishing
 Requires at least: 5.0
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,9 @@ Yes! In your Soro dashboard, you can set articles to be published as "Draft" ins
 3. API key regeneration option
 
 == Changelog ==
+
+= 1.4.3 =
+* Fixed: Posts now get the default Polylang language, so they show in the admin list and on the site
 
 = 1.4.2 =
 * Improved compatibility with various WordPress configurations
