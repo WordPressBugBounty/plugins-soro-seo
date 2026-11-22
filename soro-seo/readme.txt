@@ -4,7 +4,7 @@ Tags: seo, content, automation, ai, publishing
 Requires at least: 5.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.4.3
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,9 @@ Yes! In your Soro dashboard, you can set articles to be published as "Draft" ins
 
 == Changelog ==
 
+= 1.5.0 =
+* Improved handling of requests on sites that restrict the REST API
+
 = 1.4.3 =
 * Fixed: Posts now get the default Polylang language, so they show in the admin list and on the site
 
@@ -151,6 +154,9 @@ Yes! In your Soro dashboard, you can set articles to be published as "Draft" ins
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.5.0 =
+Improved REST API handling. Recommended for all users.
 
 = 1.4.2 =
 Improved compatibility with various WordPress configurations. Recommended for all users.

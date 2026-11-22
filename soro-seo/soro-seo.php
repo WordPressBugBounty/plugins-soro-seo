@@ -3,7 +3,7 @@
  * Plugin Name: Soro - SEO Autopilot & AI Content Writer
  * Plugin URI: https://trysoro.com/wordpress
  * Description: Connect your WordPress site to Soro for automatic AI-powered article publishing.
- * Version: 1.4.3
+ * Version: 1.5.0
  * Author: Soro
  * Author URI: https://trysoro.com
  * License: GPL v2 or later
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SORO_CONNECTOR_VERSION', '1.4.3');
+define('SORO_CONNECTOR_VERSION', '1.5.0');
 define('SORO_CONNECTOR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SORO_CONNECTOR_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -47,30 +47,24 @@ class SoroConnector {
      * unauthenticated requests. This fires before our route-level
      * permission_callback, so Soro's own API key auth never gets a chance to run.
      *
-     * This filter only clears the block for soro/v1/* routes — all other routes stay restricted.
-     * Security is preserved because every Soro endpoint still requires a valid API key via verify_api_key().
+     * This filter only clears the block for soro/v1/* routes that carry a valid Soro API key — all other
+     * routes stay restricted.
      */
     public function bypass_rest_restriction_for_soro($result) {
-        if (!is_wp_error($result)) {
+        if (!is_wp_error($result) || $result->get_error_code() === 'rest_cookie_invalid_nonce') {
             return $result;
         }
         
-        $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-        $path = strtok($request_uri, '?');
+        $rest_route = isset($GLOBALS['wp']->query_vars['rest_route']) ? $GLOBALS['wp']->query_vars['rest_route'] : '';
         
-        $rest_route = isset($_GET['rest_route']) ? $_GET['rest_route'] : '';
-        
-        $is_soro = false;
-        
-        if ($path && strpos($path, '/' . rest_get_url_prefix() . '/soro/v1/') !== false) {
-            $is_soro = true;
+        if (strpos($rest_route, '/soro/v1/') !== 0) {
+            return $result;
         }
         
-        if (!$is_soro && $rest_route && strpos($rest_route, '/soro/v1/') === 0) {
-            $is_soro = true;
-        }
+        $request = new WP_REST_Request();
+        $request->set_headers(rest_get_server()->get_headers(wp_unslash($_SERVER)));
         
-        return $is_soro ? true : $result;
+        return $this->verify_api_key($request) ? true : $result;
     }
     
     /**
